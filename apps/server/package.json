@@ -1,0 +1,23 @@
+{
+  "name": "agti-farm-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "preview": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "deploy": "npm install && npm --prefix ../web install && npm run build && npm --prefix ../web run build && pm2 start ../ecosystem.config.cjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/ws": "^8.5.12",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
