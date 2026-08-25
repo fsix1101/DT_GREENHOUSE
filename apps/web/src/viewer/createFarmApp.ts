@@ -1373,8 +1373,8 @@ export function createFarmApp(options: FarmAppOptions): FarmApp {
     // 存储功能面板引用
     functionPanels = [environmentPanel, cropsPanel, devicesPanel];
 
-    // 延迟绑定事件监听器，确保DOM和样式都已就绪
-    setTimeout(() => {
+    // 立即绑定事件监听器（使用内联样式后无需等待CSS加载）
+    const bindControlEvents = () => {
       // 添加按钮点击事件
       const controlButtons = document.querySelectorAll('.control-btn');
       controlButtons.forEach(button => {
@@ -1385,11 +1385,19 @@ export function createFarmApp(options: FarmAppOptions): FarmApp {
           controlButtons.forEach(btn => btn.classList.remove('active'));
           button.classList.add('active');
           
-          // 显示对应面板
-          functionPanels.forEach(panel => {
+          // 隐藏所有功能面板
+          const allPanels = document.querySelectorAll('.function-panel');
+          allPanels.forEach(panel => {
             panel.classList.remove('active');
+            (panel as HTMLElement).style.display = 'none';
           });
-          document.getElementById(`${targetPanel}-panel`)?.classList.add('active');
+          
+          // 显示目标面板
+          const targetElement = document.getElementById(`${targetPanel}-panel`);
+          if (targetElement) {
+            targetElement.classList.add('active');
+            targetElement.style.display = 'block';
+          }
         });
       });
 
@@ -1642,7 +1650,9 @@ export function createFarmApp(options: FarmAppOptions): FarmApp {
 
       // 初始化环境监测功能
       initEnvironmentMonitoring();
-    }, 100); // 100ms 延迟，确保DOM和样式都已就绪
+    };
+    
+    bindControlEvents();
   }
 
   // 日夜切换功能
@@ -1775,14 +1785,12 @@ export function createFarmApp(options: FarmAppOptions): FarmApp {
 
   document.body.appendChild(greenhouseIntroPanel);
 
-  // 检查当前路由，如果是协议仪表盘则隐藏面板
-  setTimeout(() => {
-    const currentPath = window.location.pathname;
-    const currentHash = window.location.hash;
-    if (currentPath.includes("/protocol") || currentHash.startsWith("#/protocol")) {
-      greenhouseIntroPanel.style.display = "none";
-    }
-  }, 100);
+  // 立即检查当前路由，如果是协议仪表盘则隐藏面板
+  const currentPath = window.location.pathname;
+  const currentHash = window.location.hash;
+  if (currentPath.includes("/protocol") || currentHash.startsWith("#/protocol")) {
+    greenhouseIntroPanel.style.display = "none";
+  }
 
   if (!cameraPanelRoot) {
     cameraPanelRoot = document.createElement("div");

@@ -20,6 +20,16 @@ export function startAppShell(): void {
   const controls = document.getElementById("controls");
 
   if (!nav) throw new Error("Missing #nav");
+  
+  // 为导航栏添加内联样式，确保首次加载时位置正确
+  nav.style.position = "fixed";
+  nav.style.right = "12px";
+  nav.style.top = "12px";
+  nav.style.zIndex = "30";
+  nav.style.display = "flex";
+  nav.style.gap = "8px";
+  nav.style.pointerEvents = "auto";
+  
   if (controls) controls.style.display = "none";
 
   let viewerHandle: ViewerPageHandle | null = null;
